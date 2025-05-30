@@ -1,0 +1,16 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_revenue_report_for_hindi_movies_in_mln`()
+BEGIN
+	SELECT m.title, m.industry, m.release_year,
+		CASE
+			WHEN unit = 'Billions' THEN f.revenue * 1000 
+			WHEN unit = 'Thousands' THEN f.revenue / 1000 
+			ELSE f.revenue 
+		END AS revenue_in_mln
+	FROM movies m
+	JOIN financials f
+	USING (movie_id)
+	JOIN languages l
+	USING (language_id)
+    WHERE l.name = 'Hindi'
+	ORDER BY revenue_in_mln DESC;
+END

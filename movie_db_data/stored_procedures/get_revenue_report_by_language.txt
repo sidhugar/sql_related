@@ -1,0 +1,18 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_revenue_report_by_language`(
+	in_lang VARCHAR (45)
+)
+BEGIN
+	SELECT m.title, m.industry, m.release_year, l.name,
+		CASE
+			WHEN unit = 'Billions' THEN f.revenue * 1000 
+			WHEN unit = 'Thousands' THEN f.revenue / 1000 
+			ELSE f.revenue 
+		END AS revenue_in_mln
+	FROM movies m
+	JOIN financials f
+	USING (movie_id)
+	JOIN languages l
+	USING (language_id)
+	WHERE l.name LIKE in_lang
+	ORDER BY revenue_in_mln;
+END
