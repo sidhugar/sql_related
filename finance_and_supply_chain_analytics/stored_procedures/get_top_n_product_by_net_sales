@@ -1,0 +1,14 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_top_n_product_by_net_sales`(
+	in_fiscal_year INT,
+    in_top_n TINYINT
+)
+BEGIN
+	SELECT 
+		product,
+		ROUND(SUM(net_sales), 2) AS total_net_sales
+	FROM net_sales_report
+	WHERE fiscal_year = in_fiscal_year
+	GROUP BY product
+	ORDER BY total_net_sales DESC
+	LIMIT in_top_n;
+END
