@@ -1,0 +1,17 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_top_n_customers_by_net_sales_for_market`(
+	in_fiscal_year INT,
+    in_top_n TINYINT,
+    in_market VARCHAR (45)
+)
+BEGIN
+	SELECT 
+		customer,
+		ROUND(SUM(net_sales)/1000000, 2) AS total_net_sales_mln
+	FROM net_sales_report n
+	JOIN dim_customer c
+		ON n.customer_code = c.customer_code
+	WHERE fiscal_year = in_fiscal_year AND n.market = in_market
+	GROUP BY c.customer 
+	ORDER BY total_net_sales_mln DESC
+	LIMIT in_top_n;
+END
