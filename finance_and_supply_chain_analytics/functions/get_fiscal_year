@@ -1,0 +1,10 @@
+CREATE DEFINER=`root`@`localhost` FUNCTION `get_fiscal_year`(
+	cal_date DATE
+) RETURNS int
+    DETERMINISTIC
+BEGIN
+-- RETURN YEAR(DATE_ADD(cal_date, INTERVAL 4 MONTH)) -- Also Works
+	DECLARE fiscal_year INT;
+    SET fiscal_year = YEAR(DATE_ADD(cal_date, INTERVAL 4 MONTH));
+	RETURN fiscal_year;
+END
