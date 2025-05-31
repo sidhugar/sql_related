@@ -1,0 +1,20 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_top_n_mkt_by_pct_net_sale_for_fin_year`(
+	in_fiscal_year INT
+)
+BEGIN
+	WITH cte1 AS (
+		SELECT 
+			customer,
+			ROUND(SUM(net_sales)/1000000, 2) AS total_net_sales_mln
+		FROM net_sales_report n
+		JOIN dim_customer d
+			ON n.customer_code = d.customer_code
+		WHERE n.fiscal_year = in_fiscal_year 
+		GROUP BY d.customer 
+	)
+    SELECT 
+		*,
+        total_net_sales_mln*100 / sum(total_net_sales_mln) OVER () AS pct
+	FROM cte1
+	ORDER BY pct DESC;
+END
