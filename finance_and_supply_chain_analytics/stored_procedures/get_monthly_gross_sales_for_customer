@@ -1,0 +1,16 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_monthly_gross_sales_for_customer`(
+	cust_code INT
+)
+BEGIN
+	SELECT 
+		sm.date,
+		SUM(g.gross_price*sm.sold_quantity) AS monthly_sales
+	FROM fact_sales_monthly sm
+	JOIN fact_gross_price g
+	ON 
+		sm.product_code = g.product_code AND
+		g.fiscal_year = get_fiscal_year (sm.date)
+	WHERE customer_code = cust_code
+	GROUP BY sm.date;
+
+END
